@@ -11,16 +11,21 @@ const App: React.FC = () => {
     const [message, setMessage] = useState("");
 
     const sendMessage = () => {
-      // (Implement logic to send the message, e.g., using a socket connection)
-      setMessages((messages) => [...messages, { user: "Me", content: message }]);
-      setMessage("");
+      if (message.trim() !== "") {
+        // (Implement logic to send the message, e.g., using a socket connection)
+        setMessages((messages) => [
+          ...messages,
+          { user: "Me", content: message },
+        ]);
+        setMessage("");
+      }
     };
+
 
   return (
     <div className="app-background">
-
       <div className="chat-background">
-        {messages.map((message) => (
+        {messages.map((message) =>
           message.user === "Me" ? (
             <div key={message.content} className="chatbox-self">
               <b>{message.user}:</b> {message.content}
@@ -30,7 +35,7 @@ const App: React.FC = () => {
               <b>{message.user}:</b> {message.content}
             </div>
           )
-        ))}
+        )}
       </div>
 
       <div className="input-background">
@@ -38,12 +43,23 @@ const App: React.FC = () => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              sendMessage();
+            }
+          }}
           className="input-box"
           placeholder="Type your message..."
         />
-        <button className="send-button" onClick={sendMessage}>Send</button>
+        <button
+          className="send-button"
+          onClick={sendMessage}
+          disabled={message.trim() === ""}
+        >
+          Send
+        </button>
       </div>
-
     </div>
   );
 };
