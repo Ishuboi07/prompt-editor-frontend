@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
+interface Message {
+  user: string;
+  content: string;
+}
+
+const App: React.FC = () => {
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    const [message, setMessage] = useState("");
+
+    const sendMessage = () => {
+      // (Implement logic to send the message, e.g., using a socket connection)
+      setMessages((messages) => [...messages, { user: "Me", content: message }]);
+      setMessage("");
+    };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-background">
+
+      <div className="chat-background">
+        {messages.map((message) => (
+          message.user === "Me" ? (
+            <div key={message.content} className="chatbox-self">
+              <b>{message.user}:</b> {message.content}
+            </div>
+          ) : (
+            <div key={message.content} className="chatbox-bot">
+              <b>{message.user}:</b> {message.content}
+            </div>
+          )
+        ))}
+      </div>
+
+      <div className="input-background">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="input-box"
+          placeholder="Type your message..."
+        />
+        <button className="send-button" onClick={sendMessage}>Send</button>
+      </div>
+
     </div>
   );
-}
+};
 
 export default App;
